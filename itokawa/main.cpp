@@ -10,58 +10,52 @@
 #include <new>
 #include <iomanip>
 #include <SDL.h>
+#include <windows.h>
 
 using namespace std;
 //*************************************
-struct triangulo{
-  float tri[4][4];
-};
 
 struct punto{
-    float x;
-    float y;
+    double x;
+    double y;
+    double z;
 };
 //**************************************
-void identidad(triangulo*, int);
 punto viewport ( float, float, float, float, float, float);
 void Linea(SDL_Renderer* ,int);
 //*************************************
 int main(int argc, char* args[]){
 
-  ifstream itokawa;
+  ifstream archivo;
   int puntos;
   SDL_Event e;
   int limite=800;
 
-  if (!itokawa.is_open()) //check is file has been opened
+  if (!archivo.is_open()) //check is file has been opened
   {
-      itokawa.open ("itokawa_f0049152.tri", ios::in | ios::out);
+      archivo.open ("itokawa_f0049152.tri", ios::in | ios::out);
 
-      if (!itokawa)
+      if (!archivo)
       {
-          cerr << "Failed to open " << itokawa << endl;
+          cerr << "Failed to open " << archivo << endl;
           exit(EXIT_FAILURE);  //abort program
       }
   }
 
-  itokawa >> puntos;
-  triangulo* t= new triangulo[puntos];
-  float trash;
-  identidad(t, puntos);
+  archivo >> puntos;
+  punto* p= new punto[puntos*3];
 
-  for (int i=0; i<puntos; i++){
-    for(int j=0; j<3; j++){
-      for(int k=0; k<3;k++){
-        itokawa >> t[i].tri[k][j];
-      }
-    }
-    t[i].tri[3][0]=1;
-    t[i].tri[3][1]=1;
-    t[i].tri[3][2]=1;
+  for (int i=0; i<puntos *3; i++){
+        archivo >> p[i].x;
+        archivo >> p[i].y;
+        archivo >> p[i].z;
   }
-  itokawa.close();
+  archivo.close();
 
-  punto p1, p2;
+  cout<<p[(puntos*3)-1].x<<endl;
+  cout<<p[(puntos*3)-1].y<<endl;
+  cout<<p[(puntos*3)-1].z<<endl;
+
 
     if (SDL_Init(SDL_INIT_VIDEO) == 0) {
         SDL_Event event;
@@ -97,10 +91,9 @@ int main(int argc, char* args[]){
         }
 
     SDL_Quit();
-    return 0;
-}
 
-  delete[] t;
+
+  delete[] p;
 
   return 0;
 
@@ -108,28 +101,8 @@ int main(int argc, char* args[]){
 //************************************************************
 //************************************************************
 
-void identidad(triangulo *t, int n) {
-  for(int k=0; k<n;k++){
-    for (int i=0; i<4 ; i++){
-      for (int j=0; j<4; j++){
-        if(i==j) t[k].tri[i][j]=1;
-        else t[k].tri[i][j]=0;
-      }
-    }
-  }
-}
 //************************************************************
-punto viewport ( float xmin, float ymin, float xmax, float, ymax, float x, float y){
-    punto p;
-    float umax, vmax, umin, vmin;
-    umax=vmax=800;
-    umin=vmin=0;
 
-    p.x= ((umax - umin) / (xmax - xmin)) * (x - xmin) + umin;
-    p.y= vmax - ((vmax - vmin) / (ymax - ymin)) * (y- tmin);
-
-    return p;
-}
 //**********************************************************************
 void Linea(SDL_Renderer* renderer,int limite){
 
