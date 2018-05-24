@@ -55,6 +55,9 @@ int main(int argc, char* args[]){
         itokawa >> t[i].tri[k][j];
       }
     }
+    t[i].tri[3][0]=1;
+    t[i].tri[3][1]=1;
+    t[i].tri[3][2]=1;
   }
   itokawa.close();
 
